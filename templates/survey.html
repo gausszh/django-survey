@@ -3,7 +3,7 @@
 
 {% block body %}
 
-<h1>Welcome to {{survey.name|title}}</h1>
+<h1>{{survey.name|title}}</h1>
 <div class="survey-description">
 	{{survey.description|safe}}
 </div>
@@ -53,7 +53,7 @@
 
 		<ol class="survey-questions">
 		{% for category in categories %}
-			<h3 class="collapsible">{{category|title}} Questions<span></span></h3>
+			<h3 class="collapsible">{{category|title}}<span></span></h3>
 			<div class="category-container">
 			{% for field in response_form %}
 				{% if field.field.widget.attrs.category == category %}
@@ -79,7 +79,7 @@
 		{% endfor %}
 		</ol>
 
-		<div class="submit-button"><input type="submit" value="I'm done!"></div>
+		<div class="submit-button"><input type="submit" value="提交!"></div>
 	</form>
 
 </div>
@@ -91,7 +91,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			//collapsible management
-			$('.collapsible').collapsible({defaultOpen: 'response_metadata'});
+			// $('.collapsible').collapsible({defaultOpen: 'response_metadata'});  不用闭合这些选项,所以注释了
 		});
 	</script>
 {% endblock %}
