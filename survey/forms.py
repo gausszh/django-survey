@@ -52,8 +52,6 @@ class ResponseForm(models.ModelForm):
             # track people
             self.track_people_id = request.POST.get("track_id")
             self.track_people_slug = request.POST.get("slug")
-            print self.track_people_id
-            print self.track_people_slug
 
         self.uuid = uuid.uuid4().hex
         # add a field for each survey question, corresponding to the question
@@ -124,7 +122,6 @@ class ResponseForm(models.ModelForm):
         response.extra = self.extra
         # track people
         track = TrackPeople.objects.filter(slug=self.track_people_slug).first()
-        print track, self.track_people_slug
         if track and str(track.id) == self.track_people_id:
             response.slug = track
         response.save()
