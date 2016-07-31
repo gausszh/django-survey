@@ -2,7 +2,8 @@
 from django import forms
 from django.forms import models
 from survey.models import (Question, Response, AnswerText, AnswerRadio, 
-                           AnswerSelect, AnswerInteger, AnswerSelectMultiple)
+                           AnswerSelect, AnswerInteger, AnswerSelectMultiple,
+                           TrackPeople)
 from django.utils.safestring import mark_safe
 import uuid
 
@@ -27,6 +28,10 @@ class ResponseForm(models.ModelForm):
         survey = kwargs.pop('survey')
         request = kwargs.pop('request', None)
         self.real_ip = "127.0.0.1"
+       
+        self.survey = survey
+        super(ResponseForm, self).__init__(*args, **kwargs)
+
         if request:
             # ip
             xff = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -40,18 +45,20 @@ class ResponseForm(models.ModelForm):
             # browser
             self.browser = request.META.get("HTTP_USER_AGENT", "unknow")
             # extra
-            self.extra = "xff:%s, remote_addr:%s" % (
+            self.extra = "xff:%s\nremote_addr:%s\nbrowser:%s" % (
                 request.META.get('HTTP_X_FORWARDED_FOR'), 
-                request.META.get('REMOTE_ADDR'))
+                request.META.get('REMOTE_ADDR'),
+                request.META.get("HTTP_USER_AGENT", "unknow"))
+            # track people
+            self.track_people_id = request.POST.get("track_id")
+            self.track_people_slug = request.POST.get("slug")
+            print self.track_people_id
+            print self.track_people_slug
 
-        print self.real_ip, self.browser, self.extra
-        self.survey = survey
-        super(ResponseForm, self).__init__(*args, **kwargs)
         self.uuid = uuid.uuid4().hex
-
         # add a field for each survey question, corresponding to the question
         # type as appropriate.
-        data = kwargs.get('data')
+        data = kwargs.get('data') or self.data
         for q in survey.questions():
             if q.question_type == Question.TEXT:
                 self.fields["question_%d" % q.pk] = forms.CharField(
@@ -112,6 +119,14 @@ class ResponseForm(models.ModelForm):
         response = super(ResponseForm, self).save(commit=False)
         response.survey = self.survey
         response.interview_uuid = self.uuid
+        response.real_ip = self.real_ip
+        response.browser = self.browser
+        response.extra = self.extra
+        # track people
+        track = TrackPeople.objects.filter(slug=self.track_people_slug).first()
+        print track, self.track_people_slug
+        if track and str(track.id) == self.track_people_id:
+            response.slug = track
         response.save()
 
         # create an answer object for each question and associate it with this
@@ -139,11 +154,6 @@ class ResponseForm(models.ModelForm):
                 elif q.question_type == Question.INTEGER:
                     a = AnswerInteger(question=q)
                     a.body = field_value
-                print "creating answer to question %d of type %s" % \
-                    (q_id, a.question.question_type)
-                print a.question.text.encode('utf8')
-                print 'answer value:'
-                print field_value
                 a.response = response
                 a.save()
         return response

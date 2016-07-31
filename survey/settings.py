@@ -140,7 +140,7 @@ INSTALLED_APPS = (
     'survey',
 )
 
-support_email = "1150177351@qq.org"
+support_email = "1150177351@qq.com"
 
 
 # A sample logging configuration. The only tangible logging
