@@ -1,6 +1,9 @@
 # coding=utf8
+import re
+
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 class Survey(models.Model):
     name = models.CharField(max_length=400)
@@ -24,7 +27,7 @@ class Category(models.Model):
 
 def validate_list(value):
     '''takes a text value and verifies that there is at least one comma '''
-    values = value.split(',')
+    values = re.split(',|\n', value)
     if len(values) < 2:
         raise ValidationError("The selected field requires an associated list of choices. Choices must contain more than one item.")
 
@@ -61,7 +64,8 @@ class Question(models.Model):
     def get_choices(self):
         ''' parse the choices field and return a tuple formatted appropriately
         for the 'choices' argument of a form widget.'''
-        choices = self.choices.split(',')
+        # choices = self.choices.split(',')
+        choices = re.split(',|\n', self.choices)
         choices_list = []
         for c in choices:
             c = c.strip()
@@ -78,13 +82,13 @@ class Response(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     survey = models.ForeignKey(Survey)
-    interviewer = models.CharField('采访者', max_length=400, 
-                                   blank=True, null=True)
-    interviewee = models.CharField('Name of Interviewee', max_length=400,
-                                   blank=True, null=True)
-    conditions = models.TextField('Conditions during interview', blank=True, null=True)
-    comments = models.TextField('Any additional Comments', blank=True, null=True)
-    interview_uuid = models.CharField("Interview unique identifier", max_length=36)
+    name = models.CharField(u'姓名', max_length=400)
+    phone_number = models.CharField(u'电话', max_length=20)
+    email = models.EmailField(u'邮箱', max_length=400)
+    interview_uuid = models.CharField(u"标识符", max_length=36)
+    real_ip = models.IPAddressField(u"IP")
+    browser = models.CharField(u"浏览器", max_length=200, blank=True, null=True)
+    extra = models.TextField(u"备注", blank=True, null=True)
 
     def __unicode__(self):
         return ("response %s" % self.interview_uuid)

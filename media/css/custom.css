@@ -148,9 +148,9 @@ div.ui-datepicker{
 }
 
 .field-wrapper {
-	width: 475px;
-	margin-bottom: 30px;
-	padding: 20px;
+	width: 50%;
+	/*margin-bottom: 30px;*/
+	padding: 8px;
 }
 
 textarea {
@@ -260,3 +260,11 @@ ol.survey-questions {
 	margin-left: 60px;
 }
 
+#shoes ul li {
+	width: 33.3%;
+	float: left;
+}
+#shoes img {
+	/*width: 30%;*/
+	height: 250px;
+}

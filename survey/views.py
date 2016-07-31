@@ -17,7 +17,7 @@ def SurveyDetail(request, id):
     print 'categories for this survey:'
     print categories
     if request.method == 'POST':
-        form = ResponseForm(request.POST, survey=survey)
+        form = ResponseForm(request.POST, survey=survey, request=request)
         if form.is_valid():
             response = form.save()
             return HttpResponseRedirect("/confirm/%s" % response.interview_uuid)

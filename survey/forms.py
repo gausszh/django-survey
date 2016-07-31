@@ -20,11 +20,31 @@ class ResponseForm(models.ModelForm):
 
     class Meta:
         model = Response
-        fields = ('interviewer', 'interviewee', 'conditions', 'comments')
+        fields = ('name', 'phone_number', 'email', 'browser', 'real_ip', 'extra')
 
     def __init__(self, *args, **kwargs):
         # expects a survey object to be passed in initially
         survey = kwargs.pop('survey')
+        request = kwargs.pop('request', None)
+        self.real_ip = "127.0.0.1"
+        if request:
+            # ip
+            xff = request.META.get('HTTP_X_FORWARDED_FOR')
+            if xff:
+                xff = ''.join(xff.split())  # remove blanks
+                real_ip = xff.split(",")[-2:][0]
+                if real_ip:
+                    self.real_ip = real_ip
+            if self.real_ip == "127.0.0.1":
+                self.real_ip = request.META.get('REMOTE_ADDR', "127.0.0.1")
+            # browser
+            self.browser = request.META.get("HTTP_USER_AGENT", "unknow")
+            # extra
+            self.extra = "xff:%s, remote_addr:%s" % (
+                request.META.get('HTTP_X_FORWARDED_FOR'), 
+                request.META.get('REMOTE_ADDR'))
+
+        print self.real_ip, self.browser, self.extra
         self.survey = survey
         super(ResponseForm, self).__init__(*args, **kwargs)
         self.uuid = uuid.uuid4().hex
