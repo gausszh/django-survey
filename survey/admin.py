@@ -42,7 +42,7 @@ class ResponseAdmin(admin.ModelAdmin):
     list_display = ('id', 'slug', 'interview_uuid', 'name', 'created') 
     inlines = [AnswerTextInline, AnswerRadioInline, AnswerSelectInline, AnswerSelectMultipleInline, AnswerIntegerInline]
     # specifies the order as well as which fields to act on 
-    readonly_fields = ('survey', 'created', 'updated', 'interview_uuid', "slug")
+    readonly_fields = ('survey', 'created', 'updated', 'interview_uuid')
 
 
 class TrackPeopleAdmin(admin.ModelAdmin):

@@ -149,6 +149,7 @@ class ResponseForm(models.ModelForm):
                     a = AnswerSelect(question=q)
                     a.body = field_value
                 elif q.question_type == Question.SELECT_MULTIPLE:
+                    field_value = '\n'.join(field_value)
                     a = AnswerSelectMultiple(question=q)
                     a.body = field_value
                 elif q.question_type == Question.INTEGER:

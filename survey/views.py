@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
-from django.conf import settings
+import settings
 from django.core.urlresolvers import reverse
 
 from models import Survey, Category, TrackPeople

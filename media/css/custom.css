@@ -268,3 +268,6 @@ ol.survey-questions {
 	/*width: 30%;*/
 	height: 250px;
 }
+#qrcode {
+	float: right;
+}
