@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     url(r'^$', 'survey.views.Index', name='home'),
     url(r'^survey/(?P<id>\d+)/?$', 'survey.views.SurveyDetail', name='survey_detail'),
     url(r'^confirm/(?P<uuid>\w+)/?$', 'survey.views.Confirm', name='confirmation'),
-    url(r'^privacy/?$', 'survey.views.privacy', name='privacy_statement'),
+    # url(r'^privacy/?$', 'survey.views.privacy', name='privacy_statement'),
     url(r'^invite/(?P<slug>\w+)/?$', 'survey.views.invite_index'),
 
 
