@@ -2,8 +2,8 @@
 
 import os
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
+TEMPLATE_DEBUG = False
 
 # Make filepaths relative to settings.
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -12,7 +12,7 @@ path = lambda *a: os.path.join(ROOT, *a)
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
-
+ALLOWED_HOSTS = ["shoes.dafeitun.cc"]
 MANAGERS = ADMINS
 
 DATABASES = {
@@ -151,6 +151,12 @@ support_email = "1150177351@qq.com"
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': "[%(asctime)s] [pid:%(process)d] [%(name)s] %(levelname)s %(message)s [%(pathname)s:%(lineno)s]",
+            'datefmt': "%Y-%m-%d %H:%M:%S"
+        },
+    },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
@@ -161,7 +167,13 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+
     },
     'loggers': {
         'django.request': {
@@ -169,5 +181,11 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
+        '': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+
+        }
     }
 }
